@@ -66,6 +66,15 @@ async function run() {
       res.send(cursor);
     });
 
+    // app.get("/detail/:id", async (req, res) => {
+    //   const id = req.params.id;
+
+    //   const filter = { _id: ObjectId(id) };
+    //   const cursor = await userCollection.findOne(filter);
+
+    //   res.send(cursor);
+    // });
+
     app.get("/orders/:id", async (req, res) => {
       const id = req.params.id;
       console.log(id);
@@ -90,12 +99,21 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/orders/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await orderCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // const name = {
     //   address: "mirpur",
     // };
     // const item = await orderCollection.insertOne(name);
     // console.log(item);
     // res.send(item);
+
+    ki keno kivbe
   } finally {
   }
 }
