@@ -22,7 +22,6 @@ async function run() {
     app.post("/review", async (req, res) => {
       const order = req.body;
       const result = await reviewCollection.insertOne(order);
-      console.log(result);
       res.send(result);
     });
 
@@ -35,7 +34,6 @@ async function run() {
 
     app.get("/review", async (req, res) => {
       const email = req.query.email;
-      console.log(email);
       const query = { email: email };
       const cursor = reviewCollection.find(query);
       const result = await cursor.toArray();
@@ -46,14 +44,12 @@ async function run() {
       const query = {};
       const cursor = userCollection.find(query).limit(3);
       const result = await cursor.toArray();
-      // console.log(result);
       res.send(result);
     });
     app.get("/allcatg", async (req, res) => {
       const query = {};
       const cursor = userCollection.find(query);
       const result = await cursor.toArray();
-      // console.log(result);
       res.send(result);
     });
 
@@ -66,18 +62,9 @@ async function run() {
       res.send(cursor);
     });
 
-    // app.get("/detail/:id", async (req, res) => {
-    //   const id = req.params.id;
-
-    //   const filter = { _id: ObjectId(id) };
-    //   const cursor = await userCollection.findOne(filter);
-
-    //   res.send(cursor);
-    // });
-
     app.get("/orders/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+
       const filter = { service_id: id };
       const cursor = orderCollection.find(filter);
       const result = await cursor.toArray();
@@ -92,10 +79,34 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/order/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const cursor = await orderCollection.findOne(query);
+      res.send(cursor);
+    });
+
     app.post("/orders", async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
-      console.log(result);
+      res.send(result);
+    });
+
+    app.put("/order/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const user = req.body;
+      const option = { upsert: true };
+      const updateUser = {
+        $set: {
+          message: user.message,
+        },
+      };
+      const result = await orderCollection.updateOne(
+        filter,
+        updateUser,
+        option
+      );
       res.send(result);
     });
 
@@ -105,15 +116,6 @@ async function run() {
       const result = await orderCollection.deleteOne(query);
       res.send(result);
     });
-
-    // const name = {
-    //   address: "mirpur",
-    // };
-    // const item = await orderCollection.insertOne(name);
-    // console.log(item);
-    // res.send(item);
-
-   
   } finally {
   }
 }
